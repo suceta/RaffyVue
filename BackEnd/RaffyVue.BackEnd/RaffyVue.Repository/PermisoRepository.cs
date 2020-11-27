@@ -11,27 +11,13 @@ namespace RaffyVue.Repository
     public class PermisoRepository : Repository<Permiso>, IPermisoRepository
     {
         //private readonly VueDBContext context;
-
+    
         public PermisoRepository(VueDBContext context) : base(context)
         {
             //this.context = context;
         }
 
-        public async Task<Permiso>  CreatePermiso(Permiso entidad) 
-        {
-            return await CreateAsync(entidad);
-        }
-
-        public async Task<Permiso> UpdatePermiso(Permiso entidad)
-        {
-            return await UpdateAsync(entidad);
-        }
-
-        public async Task<bool> DeletePermiso(Permiso entidad)
-        {
-            return await DeleteAsync(entidad);
-        }
-
+  
 
     }
 }

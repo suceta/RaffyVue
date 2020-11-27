@@ -18,19 +18,5 @@ namespace RaffyVue.Repository
             //this.context = context;
         }
 
-        public async Task<TipoPermiso> CreateTipoPermiso(TipoPermiso entidad)
-        {
-            return await CreateAsync(entidad);
-        }
-
-        public async Task<TipoPermiso> UpdateTipoPermiso(TipoPermiso entidad)
-        {
-            return await UpdateAsync(entidad);
-        }
-
-        public async Task<bool> DeleteTipoPermiso(TipoPermiso entidad)
-        {
-            return await DeleteAsync(entidad);
-        }
     }
 }

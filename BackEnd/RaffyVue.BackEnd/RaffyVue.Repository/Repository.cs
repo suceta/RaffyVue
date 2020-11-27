@@ -5,53 +5,74 @@ namespace RaffyVue.Repository
     using Microsoft.EntityFrameworkCore;
     using RaffyVue.DataModels;
     using RaffyVue.Repository.Interfaces;
+    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly VueDBContext context;
 
-        public Repository(VueDBContext context)
+        public Repository(VueDBContext dbcont)
         {
-            this.context = context;
+            this.context = dbcont;
         }
 
+        #region implement interface *************************************
+
+        //TODO agregar queryable
+
+        public async Task<T> Create(T entity)
+        {
+            await context.Set<T>().AddAsync(entity);
+            await context.SaveChangesAsync();
+            return entity;
+        }
+
+        public async Task<bool> CreateRange(IEnumerable<T> entities)
+        {
+            await context.Set<IEnumerable<T>>().AddRangeAsync(entities);
+            return await context.SaveChangesAsync() > 0;
+        }
+
+        //TODO
+        public async Task<bool> Delete(int id)
+        {
+            T entity = await context.Set<T>().FindAsync(id);
+            context.Remove(entity);
+            return await context.SaveChangesAsync() > 0;
+        }
+
+        //TODO
+        public async Task<IEnumerable<T>> FindFilter(Expression<Func<T, bool>> where)
+        {
+            return await context.Set<T>().Where(where).ToListAsync();
+        }
+
+        //TODO poner companyID filrado
         public async Task<IEnumerable<T>> GetAll()
         {
-            return await context.Set<T>().ToListAsync();       
+            return await context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        //TODO
+        public async Task<T> FindById(int id)
         {
-            return await context.Set<T>().FindAsync(id);
-                
+            return await context.Set<T>().FindAsync(id); ;
+        }
+        public async Task<T> FindFilterFirst(Expression<Func<T, bool>> where)
+        {
+            return await context.Set<T>().FindAsync(where);
         }
 
-        public async Task<T> CreateAsync(T entity)
+        public async Task<T> Update(T entity)
         {
-            await this.context.Set<T>().AddAsync(entity);
-            await SaveAllAsync();
+            context.Entry(entity).State = EntityState.Modified;
+            await context.SaveChangesAsync();
             return entity;
         }
-
-        public async Task<T> UpdateAsync(T entity)
-        {
-            this.context.Set<T>().Update(entity);
-            await SaveAllAsync();
-            return entity;
-        }
-
-        public async Task<bool> DeleteAsync(T entity)
-        {
-            this.context.Set<T>().Remove(entity);
-            return await this.context.SaveChangesAsync() > 0;
-        }
-
-        public async Task<bool> SaveAllAsync()
-        {
-            return await this.context.SaveChangesAsync() > 0;
-        }
+        #endregion
     }
 }
